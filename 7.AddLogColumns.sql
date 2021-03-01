@@ -9,6 +9,8 @@ DECLARE @LogId_Type Varchar(20)='ndtInt'
 DECLARE @Col_User_LoginId varchar(20)='User_LoginId'
 DECLARE @Col_User_LoginId_Type varchar(20)='ndtInt'
 -----------------------------------------------------------
+DECLARE @Action_Log varchar(20)='Log_Action'
+DECLARE @Action_Log_Type varchar(20)='ndtSmallInt'
 
 DECLARE @Commands TABLE(Id bigint identity(1,1),Command varchar(max))
 ---------------------ADD LgDate Column----------------------------------
@@ -50,6 +52,22 @@ Insert INTO @Commands
 						WHERE 
 							sys.columns.column_id IS NULL 
 --select * from @Commands
+
+
+Insert INTO @Commands
+						SELECT 
+								--'Exec Sp_executesql N'' '
+								--+
+								N' ALTER TABLE '+OBJECT_SCHEMA_NAME(sys.tables.object_id)+'.'+sys.tables.name+'  ADD '+@Action_Log+' '+@Action_Log_Type+' null'
+						FROM
+							sys.tables
+						Left join
+							sys.columns on	sys.tables.object_id=sys.columns.object_id and sys.columns.name=@Action_Log
+						WHERE 
+							sys.columns.column_id IS NULL 
+
+
+
 
 DECLARE @Id bigint=(SELECT TOP 1 Id FROM @Commands)
 
