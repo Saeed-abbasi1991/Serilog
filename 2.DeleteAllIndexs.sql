@@ -1,6 +1,6 @@
 --This Script Drop All Indexs
-use sadganBase
-declare @Commands TABLE(Id bigint identity(1,1),Command varchar(max));
+USE sadganBase
+DECLARE @Commands TABLE(Id bigint identity(1,1),Command varchar(max));
 
 Insert Into @Commands 
 					SELECT 
@@ -23,17 +23,16 @@ Insert Into @Commands
 					WHERE 
 						indexs.is_primary_key = 0 
 
-select * from @Commands
-
 DECLARE @Id bigint=(SELECT TOP 1 id from @Commands)
 
 WHILE @Id is not null
-BEGIN
-		DECLARE @cmd nvarchar(max)=(select top 1 command from @Commands where Id=@Id)
-		EXEC sp_executesql @cmd
-		DELETE FROM @Commands where Id=@Id
-		SELECT @Id=(SELECT TOP 1 Id FROM @Commands)
-END
+	BEGIN
+			DECLARE @cmd nvarchar(max)=(select top 1 command from @Commands where Id=@Id)
+			print @cmd
+			EXEC sp_executesql @cmd
+			DELETE FROM @Commands where Id=@Id
+			SELECT @Id=(SELECT TOP 1 Id FROM @Commands)
+	END
 
 
 

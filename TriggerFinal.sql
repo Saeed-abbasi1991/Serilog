@@ -2,22 +2,23 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER TRIGGER [STO].[Trg_ImportHeader]
+CREATE TRIGGER [STO].[Trg_ImportHeader]
 ON [sadganPaloodDev].[STO].[ImportHeader]
 AFTER INSERT, DELETE,UPDATE
 AS
 BEGIN
     SET NOCOUNT ON;
 
-	DECLARE @Nt_Domain varchar(max)=(SELECT TOP 1 nt_domain from sys.dm_exec_sessions WHERE session_id=@@SPID)
-	DECLARE @Nt_User varchar(max)=(SELECT TOP 1 nt_user_name from sys.dm_exec_sessions WHERE session_id=@@SPID)
-	DECLARE @Client_NetAddress varchar(max)=(SELECT TOP 1 client_net_address from sys.dm_exec_connections WHERE session_id=@@SPID)
-	DECLARE @User_LoginId ndtid=(SELECT TOP 1 id FROM GNR.UserLogin WHERE 
-	--LocalIP=@Client_NetAddress AND 
-	LocalUser=@Nt_User AND ComputerName=@Nt_Domain
-	--AND ISNULL(BatchStarted,0)=1
-	)
-	
+	--DECLARE @Nt_Domain varchar(max)=(SELECT TOP 1 nt_domain from sys.dm_exec_sessions WHERE session_id=@@SPID)
+	--DECLARE @Nt_User varchar(max)=(SELECT TOP 1 nt_user_name from sys.dm_exec_sessions WHERE session_id=@@SPID)
+	--DECLARE @Client_NetAddress varchar(max)=(SELECT TOP 1 client_net_address from sys.dm_exec_connections WHERE session_id=@@SPID)
+	DECLARE @User_LoginId ndtid
+	--=(SELECT TOP 1 id FROM GNR.UserLogin WHERE 
+	----LocalIP=@Client_NetAddress AND 
+	--LocalUser=@Nt_User AND ComputerName=@Nt_Domain
+	----AND ISNULL(BatchStarted,0)=1
+	--)
+	select @User_LoginId=(SELECT TOP 1 ID FRom GNR.UserLogin where SessionId=@@SPID)
     INSERT INTO sadganBase.STO.ImportHeader(
 	  [RefVoucherTypeID]
       ,[RefFiscalYearID]

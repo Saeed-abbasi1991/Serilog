@@ -1,13 +1,15 @@
 --This Scripts Set Identity Property Columns To No For All Tables
-
+--Note:For Disable Identity From Yes To No This Command Not Effect On Table:AlTER TABLE MYTABLE SET IDENTITY OFF
+--You Most Delete Column AND Create Again
+USE sadganBase
 DECLARE @Commands TABLE(Id BIGINT IDENTITY(1,1),Command Varchar(max))
 
-declare @Cmd1 nvarchar(max)
-declare @Cmd2 nvarchar(max)
-declare @Cmd3 nvarchar(max)
-declare @Cmd4 nvarchar(max)
-declare @Cmd5 nvarchar(max)
-declare @Cmd6 nvarchar(max)
+DECLARE @Cmd1 nvarchar(max)
+DECLARE @Cmd2 nvarchar(max)
+DECLARE @Cmd3 nvarchar(max)
+DECLARE @Cmd4 nvarchar(max)
+DECLARE @Cmd5 nvarchar(max)
+DECLARE @Cmd6 nvarchar(max)
 
  DECLARE cmdcursor2 CURSOR FOR   
 					SELECT 
@@ -28,35 +30,35 @@ declare @Cmd6 nvarchar(max)
 											
 							,'ALTER TABLE '+OBJECT_SCHEMA_NAME(sys.objects.object_id)+'.'+tbls.name
 							+' DROP COLUMN '+'tmpcolumn'+cols.name as s6
-					 from
+					 FROM
 						sys.tables tbls
-					join
+					 JOIN
 						sys.identity_columns identities on tbls.object_id=identities.object_id
-					join 
+					 JOIN 
 						sys.columns cols on identities.column_id=cols.column_id and identities.object_id=cols.object_id
-					join 
+					 JOIN 
 						sys.objects on tbls.object_id=sys.objects.object_id 
-					join 
+					 JOIN 
 						sys.types on cols.system_type_id=sys.types.system_type_id and cols.user_type_id=sys.types.user_type_id
   
 	OPEN cmdcursor2  
 		FETCH NEXT FROM cmdcursor2 INTO @Cmd1,@Cmd2,@Cmd3,@Cmd4,@Cmd5,@Cmd6  
 		WHILE @@FETCH_STATUS = 0  
 			BEGIN  
-				  exec sp_executesql @Cmd1
-				  exec sp_executesql @Cmd2 
-				  exec sp_executesql @Cmd3
-				  exec sp_executesql @Cmd4 
-				  exec sp_executesql @Cmd5
-				  exec sp_executesql @Cmd6  
-				  PRINT @Cmd1  
-				  PRINT @Cmd2 
-				  PRINT @Cmd3 
-				  PRINT @Cmd4 
-				  PRINT @Cmd5 
+			      PRINT @Cmd1 
+				  EXEC sp_executesql @Cmd1 
+				  PRINT @Cmd2
+				  EXEC sp_executesql @Cmd2 
+				  PRINT @Cmd3
+				  EXEC sp_executesql @Cmd3 
+				  PRINT @Cmd4
+				  EXEC sp_executesql @Cmd4 
+				  PRINT @Cmd5
+				  EXEC sp_executesql @Cmd5 
 				  PRINT @Cmd6
+				  EXEC sp_executesql @Cmd6 
 				FETCH NEXT FROM cmdcursor2 INTO  @Cmd1,@Cmd2,@Cmd3,@Cmd4,@Cmd5,@Cmd6    
 			 END  
     CLOSE cmdcursor2  
-    DEALLOCATE cmdcursor2 
+   DEALLOCATE cmdcursor2 
 				
